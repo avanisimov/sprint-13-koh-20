@@ -84,6 +84,8 @@ class MainActivity : AppCompatActivity() {
             layoutManager = GridLayoutManager(this@MainActivity, 2)
             adapter = catalogItemsAdapter
             itemAnimator = null
+
+
         }
 
         catalogItemsAdapter.setItems(catalogItems)
@@ -100,7 +102,8 @@ class MainActivity : AppCompatActivity() {
                                 )
                             )
                         }
-                        cartItemsAdapter.setItems(cartItems)
+                        updateCartItems(cartItems)
+
                         it.copy(count = 1)
                     } else {
                         it
@@ -138,7 +141,9 @@ class MainActivity : AppCompatActivity() {
             itemAnimator = null
         }
 
-        cartItemsAdapter.setItems(cartItems)
+
+
+        updateCartItems(cartItems)
         with(cartItemsAdapter) {
             onAddCountClickListener = OnCartAddCountClickListener { item ->
                 cartItems = cartItems.map {
@@ -148,7 +153,7 @@ class MainActivity : AppCompatActivity() {
                         it
                     }
                 }
-                cartItemsAdapter.setItems(cartItems)
+                updateCartItems(cartItems)
             }
             onRemoveCountClickListener = OnCartRemoveCountClickListener { item ->
                 cartItems = cartItems.map {
@@ -158,8 +163,17 @@ class MainActivity : AppCompatActivity() {
                         it
                     }
                 }
-                cartItemsAdapter.setItems(cartItems)
+                updateCartItems(cartItems)
             }
+        }
+    }
+
+    private fun updateCartItems (list : List<CartItem>) {
+        cartItemsAdapter.setItems(cartItems)
+        if (list.isNotEmpty()){
+            binding.cartEmptyTitle.visibility = View.GONE
+        } else {
+            binding.cartEmptyTitle.visibility = View.VISIBLE
         }
     }
 
@@ -181,6 +195,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun changeCurrentScreenMode(newScreenMode: ScreenMode) {
         if (newScreenMode != currentScreenMode) {
+            binding.toolbar.setTitle(newScreenMode.titleResId)
             when (newScreenMode) {
                 ScreenMode.CATALOG -> {
                     binding.catalogContainer.visibility = View.VISIBLE
