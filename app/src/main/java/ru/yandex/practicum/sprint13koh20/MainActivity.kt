@@ -5,8 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.view.isNotEmpty
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import retrofit2.Call
@@ -24,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     val serverApi: ServerApi by lazy {
         ServerApi.create()
     }
-    private lateinit var listCheckResult : List<CartItem>
+
     // UI
     private lateinit var binding: ActivityMainBinding
     private val catalogItemsAdapter: CatalogItemsAdapter by lazy {
