@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import retrofit2.Call
@@ -85,6 +84,8 @@ class MainActivity : AppCompatActivity() {
             layoutManager = GridLayoutManager(this@MainActivity, 2)
             adapter = catalogItemsAdapter
             itemAnimator = null
+
+
         }
 
         catalogItemsAdapter.setItems(catalogItems)
@@ -101,7 +102,8 @@ class MainActivity : AppCompatActivity() {
                                 )
                             )
                         }
-                        cartItemsAdapter.setItems(cartItems)
+                        updateCartItems(cartItems)
+
                         it.copy(count = 1)
                     } else {
                         it
@@ -139,7 +141,9 @@ class MainActivity : AppCompatActivity() {
             itemAnimator = null
         }
 
-        cartItemsAdapter.setItems(cartItems)
+
+
+        updateCartItems(cartItems)
         with(cartItemsAdapter) {
             onAddCountClickListener = OnCartAddCountClickListener { item ->
                 cartItems = cartItems.map {
@@ -149,7 +153,7 @@ class MainActivity : AppCompatActivity() {
                         it
                     }
                 }
-                cartItemsAdapter.setItems(cartItems)
+                updateCartItems(cartItems)
             }
             onRemoveCountClickListener = OnCartRemoveCountClickListener { item ->
                 cartItems = cartItems.map {
@@ -159,8 +163,17 @@ class MainActivity : AppCompatActivity() {
                         it
                     }
                 }
-                cartItemsAdapter.setItems(cartItems)
+                updateCartItems(cartItems)
             }
+        }
+    }
+
+    private fun updateCartItems (list : List<CartItem>) {
+        cartItemsAdapter.setItems(cartItems)
+        if (list.isNotEmpty()){
+            binding.cartEmptyTitle.visibility = View.GONE
+        } else {
+            binding.cartEmptyTitle.visibility = View.VISIBLE
         }
     }
 
