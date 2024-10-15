@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isNotEmpty
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import retrofit2.Call
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     val serverApi: ServerApi by lazy {
         ServerApi.create()
     }
-
+    private lateinit var listCheckResult : List<CartItem>
     // UI
     private lateinit var binding: ActivityMainBinding
     private val catalogItemsAdapter: CatalogItemsAdapter by lazy {
@@ -85,6 +86,8 @@ class MainActivity : AppCompatActivity() {
             layoutManager = GridLayoutManager(this@MainActivity, 2)
             adapter = catalogItemsAdapter
             itemAnimator = null
+
+
         }
 
         catalogItemsAdapter.setItems(catalogItems)
@@ -101,10 +104,8 @@ class MainActivity : AppCompatActivity() {
                                 )
                             )
                         }
-                        cartItemsAdapter.setItems(cartItems)
-                        if (cartItems.isNotEmpty()) {
-                            binding.cartEmptyTitle.visibility = View.GONE
-                        }
+                        updateCartItems(cartItems)
+
                         it.copy(count = 1)
                     } else {
                         it
@@ -142,7 +143,9 @@ class MainActivity : AppCompatActivity() {
             itemAnimator = null
         }
 
-        cartItemsAdapter.setItems(cartItems)
+
+
+        updateCartItems(cartItems)
         with(cartItemsAdapter) {
             onAddCountClickListener = OnCartAddCountClickListener { item ->
                 cartItems = cartItems.map {
@@ -152,7 +155,7 @@ class MainActivity : AppCompatActivity() {
                         it
                     }
                 }
-                cartItemsAdapter.setItems(cartItems)
+                updateCartItems(cartItems)
             }
             onRemoveCountClickListener = OnCartRemoveCountClickListener { item ->
                 cartItems = cartItems.map {
@@ -162,8 +165,17 @@ class MainActivity : AppCompatActivity() {
                         it
                     }
                 }
-                cartItemsAdapter.setItems(cartItems)
+                updateCartItems(cartItems)
             }
+        }
+    }
+
+    private fun updateCartItems (list : List<CartItem>) {
+        cartItemsAdapter.setItems(cartItems)
+        if (list.isNotEmpty()){
+            binding.cartEmptyTitle.visibility = View.GONE
+        } else {
+            binding.cartEmptyTitle.visibility = View.VISIBLE
         }
     }
 
